@@ -8,11 +8,11 @@ def main() :
 
     if os.path.exists(build_dir):
         if os.path.isdir(build_dir):
-            shutil.rmtree("build")
+            shutil.rmtree(build_dir)
         else:
             os.remove(build_dir)
 
-    shutil.copytree("extension", "build")
+    shutil.copytree(extension_dir, build_dir)
     print("build complete - load the build folder into chrome")
 
 if __name__ == "__main__":
