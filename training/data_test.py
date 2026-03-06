@@ -10,6 +10,7 @@ clean = points[
 ]
 
 # Join with cases to get classification labels
+
 merged = clean.merge(cases[["id", "classification"]], 
                      left_on="case_id", 
                      right_on="id")
