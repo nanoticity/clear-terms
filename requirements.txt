@@ -3,3 +3,5 @@ tqdm
 pandas
 scikit-learn
 joblib
+flask
+flask-cors

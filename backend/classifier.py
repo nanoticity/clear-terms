@@ -47,18 +47,46 @@ def predict_batch(texts: list[str]) -> list[dict]:
     return results
 
 
+def _is_header(text: str) -> bool:
+    """Detect section headers, numbered labels, and other structural noise."""
+    import re
+    stripped = text.strip()
+    # All caps (with optional punctuation/numbers), e.g. "TERMINATION AND SUSPENSION OF SERVICES"
+    if re.match(r'^[A-Z0-9\s\-/&,;:()]+$', stripped) and len(stripped) < 200:
+        return True
+    # Single letter/number labels like "G.", "12.", "IV.", "A)"
+    if re.match(r'^[A-Z0-9]{1,4}[.)]\s*$', stripped):
+        return True
+    # Numbered section headers like "1. Introduction" or "Section 5: Data"
+    if re.match(r'^(section\s+)?\d+[.):]?\s+[A-Z]', stripped, re.IGNORECASE) and len(stripped) < 80:
+        return True
+    return False
+
+
 def extract_clauses(tos_text: str) -> list[str]:
     """
-    Simple clause extraction: split on sentence boundaries and filter short fragments.
-    Returns list of clauses (sentences) longer than 20 characters.
+    Extract meaningful clauses from a ToS document by splitting on paragraph
+    boundaries and filtering out headers, short fragments, and boilerplate.
     """
     import re
 
-    # Split on periods, exclamation marks, question marks followed by space
-    sentences = re.split(r'(?<=[.!?])\s+', tos_text)
+    # Split on double newlines (paragraph boundaries) first
+    paragraphs = re.split(r'\n\s*\n', tos_text)
 
-    # Filter out very short fragments and empty strings
-    clauses = [s.strip() for s in sentences if len(s.strip()) > 20]
+    clauses = []
+    for para in paragraphs:
+        # Collapse internal whitespace
+        para = re.sub(r'\s+', ' ', para).strip()
+
+        # Skip empty or very short text (less than 80 chars is unlikely to be a real clause)
+        if len(para) < 80:
+            continue
+
+        # Skip section headers and structural labels
+        if _is_header(para):
+            continue
+
+        clauses.append(para)
 
     return clauses
 
