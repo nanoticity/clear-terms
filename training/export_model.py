@@ -1,9 +1,8 @@
-"""Export sklearn pipeline (TF-IDF + LinearSVC) to JSON for use in the Chrome extension."""
+"""Export sklearn pipeline (TF-IDF + LogisticRegression) to JSON for use in the Chrome extension."""
 
 import json
 import os
 import joblib
-import numpy as np
 
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "backend", "model", "classifier.pkl")
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "extension", "model")

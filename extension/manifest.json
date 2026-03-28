@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Clear Terms",
-  "version": "0.2.0",
-  "description": "Automatically finds and grades privacy policies",
-  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "version": "0.3.0",
+  "description": "Analyzes Terms of Service and Privacy Policy pages",
+  "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html"
   },

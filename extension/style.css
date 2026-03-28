@@ -199,8 +199,9 @@ h2 {
   flex-shrink: 0;
 }
 
-/* Sample clauses */
-#sample-clauses {
+/* Clause sections */
+#flagged-clauses,
+#good-clauses {
   padding: 0 20px 16px;
 }
 
@@ -216,6 +217,7 @@ h2 {
   color: var(--text);
 }
 
+.clause-card.good    { border-left-color: var(--good); }
 .clause-card.bad     { border-left-color: var(--bad); }
 .clause-card.blocker { border-left-color: var(--blocker); }
 
@@ -227,5 +229,28 @@ h2 {
   margin-bottom: 4px;
 }
 
+.clause-type.good    { color: var(--good); }
 .clause-type.bad     { color: var(--bad); }
 .clause-type.blocker { color: var(--blocker); }
+
+.clause-reasons {
+  margin-bottom: 6px;
+}
+
+.clause-reason {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e6edf3;
+  padding: 2px 0;
+}
+
+.clause-reason::before {
+  content: "\2192 ";
+  opacity: 0.5;
+}
+
+.clause-text {
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1.5;
+}

@@ -12,7 +12,7 @@
 
   <div id="status" class="status">
     <div class="spinner"></div>
-    <span id="status-text">Looking for privacy policy...</span>
+    <span id="status-text">Analyzing page...</span>
   </div>
 
   <div id="error" class="error" hidden>
@@ -30,8 +30,6 @@
         <span id="grade" class="summary-value badge">—</span>
       </div>
     </div>
-
-    <a id="policy-link" class="policy-link" href="#" target="_blank" hidden>View privacy policy</a>
 
     <h2>Breakdown</h2>
     <div class="bars">
@@ -57,14 +55,20 @@
       </div>
     </div>
 
-    <div id="samples-section" hidden>
-      <h2>Problematic Clauses</h2>
-      <div id="sample-clauses"></div>
+    <div id="flagged-section" hidden>
+      <h2>Flagged Clauses</h2>
+      <div id="flagged-clauses"></div>
+    </div>
+
+    <div id="good-section" hidden>
+      <h2>Good Practices</h2>
+      <div id="good-clauses"></div>
     </div>
   </div>
 
   <script src="classifier.js"></script>
   <script src="clauses.js"></script>
+  <script src="reasons.js"></script>
   <script src="analyzer.js"></script>
   <script src="popup.js"></script>
 </body>
