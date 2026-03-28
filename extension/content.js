@@ -85,16 +85,14 @@ async function tryFallbackPaths() {
 
 // ── Main ──────────────────────────────────────────────
 
-chrome.storage.sync.get({ autoScan: true }, (settings) => {
-  if (!settings.autoScan) return;
-  (async () => {
-    if (!location.protocol.startsWith("http")) return;
+(async () => {
+  if (!location.protocol.startsWith("http")) return;
 
-    const key = "__ct_" + location.hostname;
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, "1");
+  const key = "__ct_" + location.hostname;
+  if (sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key, "1");
 
-    console.log("[Clear Terms] Scanning for privacy policy on", location.hostname);
+  console.log("[Clear Terms] Scanning for privacy policy on", location.hostname);
 
   let policyUrl = findPrivacyLink();
   if (policyUrl) console.log("[Clear Terms] Found link:", policyUrl);
@@ -120,74 +118,4 @@ chrome.storage.sync.get({ autoScan: true }, (settings) => {
     url: policyUrl,
     hostname: location.hostname,
   });
-  })();
-});
-
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action !== "gradeReady") return;
-  chrome.storage.sync.get({ notifications: true, theme: "dark" }, (settings) => {
-    if (!settings.notifications) return;
-    showGradeNotification(msg, settings.theme);
-  });
-});
-
-function showGradeNotification(msg, theme = "dark") {
-  const existing = document.getElementById("clear-terms-grade-notification");
-  if (existing) return;
-
-  const banner = document.createElement("div");
-  banner.id = "clear-terms-grade-notification";
-  banner.style.position = "fixed";
-  banner.style.bottom = "16px";
-  banner.style.right = "16px";
-  banner.style.zIndex = "2147483647";
-  banner.style.maxWidth = "320px";
-  banner.style.padding = "14px 16px";
-  banner.style.borderRadius = "12px";
-  banner.style.boxShadow = theme === "light" ? "0 18px 40px rgba(0,0,0,0.12)" : "0 18px 40px rgba(0,0,0,0.22)";
-  banner.style.background = theme === "light" ? "rgba(255, 255, 255, 0.96)" : "rgba(20, 28, 54, 0.96)";
-  banner.style.color = theme === "light" ? "#111" : "#fff";
-  banner.style.fontFamily = "system-ui, sans-serif";
-  banner.style.fontSize = "14px";
-  banner.style.lineHeight = "1.4";
-  banner.style.backdropFilter = "blur(12px)";
-
-  const label = document.createElement("div");
-  label.textContent = "Clear Terms grade ready";
-  label.style.fontWeight = "700";
-  label.style.marginBottom = "6px";
-  banner.appendChild(label);
-
-  const gradeLine = document.createElement("div");
-  gradeLine.innerHTML = `Grade: <strong>${escapeHtml(msg.grade || "?")}</strong> <span style="opacity:.8">(${escapeHtml(msg.grade_class || "")})</span>`;
-  banner.appendChild(gradeLine);
-
-  if (msg.total_clauses !== undefined) {
-    const detail = document.createElement("div");
-    detail.textContent = `Clauses analyzed: ${msg.total_clauses}`;
-    detail.style.marginTop = "6px";
-    detail.style.opacity = "0.9";
-    banner.appendChild(detail);
-  }
-
-  const button = document.createElement("button");
-  button.textContent = "Hide";
-  button.style.marginTop = "12px";
-  button.style.padding = "8px 12px";
-  button.style.border = "none";
-  button.style.borderRadius = "8px";
-  button.style.background = theme === "light" ? "#111" : "#ffffff";
-  button.style.color = theme === "light" ? "#fff" : "#111";
-  button.style.cursor = "pointer";
-  button.style.fontWeight = "600";
-  button.addEventListener("click", () => banner.remove());
-  banner.appendChild(button);
-
-  document.body.appendChild(banner);
-}
-
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
+})();

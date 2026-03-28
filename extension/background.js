@@ -102,7 +102,6 @@ async function getModel() {
 // ── Badge colors ──────────────────────────────────────
 
 const BADGE_COLORS = { A: "#3fb68b", B: "#58a6b1", C: "#d4a850", D: "#d07840", F: "#cf5050" };
-const BACKEND_URL = "http://localhost:5000";
 
 // ── Fetch policy text via hidden tab ──────────────────
 
@@ -171,34 +170,6 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       await chrome.storage.session.set({
         ["ct_" + msg.hostname]: { ...result, policyUrl: msg.url, hostname: msg.hostname },
       });
-
-      // Send a record to backend for history (best-effort)
-      try {
-        fetch(`${BACKEND_URL}/record-grade`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            domain: msg.hostname,
-            hostname: msg.hostname,
-            grade: result.grade,
-            grade_class: result.grade_class,
-            classification_counts: result.classification_counts,
-            sample_clauses: result.sample_clauses,
-            policyUrl: msg.url,
-          }),
-        }).catch((e) => console.warn("Failed sending grade to backend", e));
-      } catch (e) {
-        console.warn("Error posting grade to backend", e);
-      }
-
-      // Send grade-ready notification to the page content script
-      chrome.tabs.sendMessage(originTabId, {
-        action: "gradeReady",
-        grade: result.grade,
-        grade_class: result.grade_class,
-        total_clauses: result.total_clauses,
-        policyUrl: msg.url,
-      }).catch(() => {});
 
       // Show grade badge on the original tab
       chrome.action.setBadgeText({ text: result.grade, tabId: originTabId });

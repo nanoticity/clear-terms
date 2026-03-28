@@ -46,18 +46,6 @@ function analyzeTos(tosText, model) {
     grade = "F"; gradeClass = "blocker";
   }
 
-  const flagged_clauses = [];
-  for (let i = 0; i < clauses.length; i++) {
-    const pred = predictions[i];
-    if (pred.classification === "bad" || pred.classification === "blocker") {
-      flagged_clauses.push({
-        text: clauses[i],
-        classification: pred.classification,
-        confidence: pred.confidence,
-      });
-    }
-  }
-
   return {
     status: "ok",
     total_clauses: clauses.length,
@@ -69,6 +57,5 @@ function analyzeTos(tosText, model) {
       bad: clauses.filter((c, i) => predictions[i].classification === "bad").slice(0, 2),
       blocker: clauses.filter((c, i) => predictions[i].classification === "blocker").slice(0, 2),
     },
-    flagged_clauses: flagged_clauses,
   };
 }
