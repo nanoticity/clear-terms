@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
+from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report
 import joblib
@@ -27,8 +27,8 @@ def load_data():
         right_on="id",
     )
 
-    texts = merged["quote_text"].str.strip().str.lower().values
-    labels = merged["classification"].values
+    texts = merged["quote_text"].str.strip().str.lower().tolist()
+    labels = merged["classification"].tolist()
 
     print(f"Total training examples: {len(texts)}")
     print(f"Class distribution:\n{merged['classification'].value_counts().to_string()}\n")
@@ -44,9 +44,26 @@ def train():
     )
 
     pipeline = Pipeline([
-        ("tfidf", TfidfVectorizer(ngram_range=(1, 2), max_features=10000)),
-        ("clf", LinearSVC(class_weight="balanced", max_iter=5000)),
+        ("tfidf", TfidfVectorizer(
+            ngram_range=(1, 3),
+            max_features=50000,
+            sublinear_tf=True,
+            min_df=2,
+            max_df=0.95,
+            strip_accents="unicode",
+        )),
+        ("clf", LogisticRegression(
+            class_weight="balanced",
+            max_iter=5000,
+            C=1.0,
+            solver="lbfgs",
+        )),
     ])
+
+    # Cross-validation
+    print("Running 5-fold cross-validation...")
+    cv_scores = cross_val_score(pipeline, X_train, y_train, cv=5, scoring="f1_macro")
+    print(f"CV F1 (macro): {cv_scores.mean():.3f} (+/- {cv_scores.std():.3f})\n")
 
     pipeline.fit(X_train, y_train)
 
