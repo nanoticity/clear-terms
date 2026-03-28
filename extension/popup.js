@@ -11,13 +11,33 @@ async function getModel() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const statusEl = document.getElementById("status");
+  const statusText = document.getElementById("status-text");
   const errorEl = document.getElementById("error");
   const errorMsg = document.getElementById("error-message");
   const resultsEl = document.getElementById("results");
+  const policyLinkEl = document.getElementById("policy-link");
 
   try {
-    // Get active tab and extract page text directly
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const hostname = new URL(tab.url).hostname;
+
+    // Check if background already graded this site
+    const key = "ct_" + hostname;
+    const stored = await chrome.storage.session.get(key);
+
+    if (stored[key] && stored[key].status === "ok") {
+      const data = stored[key];
+      if (data.policyUrl) {
+        policyLinkEl.href = data.policyUrl;
+        policyLinkEl.textContent = "View privacy policy";
+        policyLinkEl.hidden = false;
+      }
+      renderResults(data);
+      return;
+    }
+
+    // Fallback: analyze the current page directly
+    statusText.textContent = "Analyzing page...";
 
     const [{ result: pageText }] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -28,12 +48,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       throw new Error("Could not extract text from this page.");
     }
 
-    // Load model and analyze locally
     const model = await getModel();
     const data = analyzeTos(pageText, model);
 
     if (data.status === "error") {
-      throw new Error(data.message || "Analysis failed.");
+      throw new Error(data.message || "No privacy policy clauses found on this page.");
     }
 
     renderResults(data);
@@ -62,7 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById(`bar-${type}`).style.width = `${(count / total) * 100}%`;
     }
 
-    // Sample clauses
     const samples = data.sample_clauses || {};
     const container = document.getElementById("sample-clauses");
     const section = document.getElementById("samples-section");
@@ -78,9 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    if (hasSamples) {
-      section.hidden = false;
-    }
+    if (hasSamples) section.hidden = false;
   }
 
   function escapeHtml(str) {
