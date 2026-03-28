@@ -7,12 +7,12 @@
 <body>
   <div class="header">
     <h1>Clear Terms</h1>
-    <p class="subtitle">ToS Clause Analyzer</p>
+    <p class="subtitle">Privacy Policy Analyzer</p>
   </div>
 
   <div id="status" class="status">
     <div class="spinner"></div>
-    <span>Analyzing page...</span>
+    <span id="status-text">Looking for privacy policy...</span>
   </div>
 
   <div id="error" class="error" hidden>
@@ -30,6 +30,8 @@
         <span id="grade" class="summary-value badge">—</span>
       </div>
     </div>
+
+    <a id="policy-link" class="policy-link" href="#" target="_blank" hidden>View privacy policy</a>
 
     <h2>Breakdown</h2>
     <div class="bars">
