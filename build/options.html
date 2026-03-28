@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clear Terms Options</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body.options-page { width: 100%; max-width: 640px; min-height: 100vh; padding: 24px; }
+    .options-container { padding: 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+    .option-row { margin-bottom: 18px; }
+    .option-row label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .option-row input[type="checkbox"] { margin-right: 8px; }
+    .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .radio-group label { display: flex; align-items: center; gap: 6px; font-weight: 400; }
+    .save-button { margin-top: 12px; padding: 10px 16px; border: none; border-radius: 8px; background: #58a6b1; color: #fff; cursor: pointer; }
+    .status-message { margin-top: 12px; color: #7ec8d3; }
+    .section-subtitle { color: #8b98a8; font-size: 12px; margin-top: 4px; }
+  </style>
+</head>
+<body class="options-page theme-light">
+  <div class="header">
+    <h1>Clear Terms Options</h1>
+  </div>
+  <div class="options-container">
+    <div class="option-row">
+      <label>Theme</label>
+      <div class="radio-group">
+        <label><input type="radio" name="theme" value="dark"> Dark</label>
+        <label><input type="radio" name="theme" value="light"> Light</label>
+      </div>
+      <div class="section-subtitle">Choose the extension popup and page notification theme.</div>
+    </div>
+
+    <div class="option-row">
+      <label><input type="checkbox" id="auto-scan"> Enable auto-scan on page load</label>
+      <div class="section-subtitle">When enabled, Clear Terms automatically searches for policies on each page.</div>
+    </div>
+
+    <div class="option-row">
+      <label><input type="checkbox" id="notifications"> Show page notifications when grading completes</label>
+      <div class="section-subtitle">Toggle whether the in-page grade notification banner appears.</div>
+    </div>
+
+    <button id="save-btn" class="save-button">Save settings</button>
+    <div id="status-message" class="status-message"></div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
