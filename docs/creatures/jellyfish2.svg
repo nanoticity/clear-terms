@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 110" fill="none">
+  <!-- Bell -->
+  <path d="M8 40 Q8 6 35 6 Q62 6 62 40" fill="rgba(100,180,210,0.2)" stroke="rgba(130,200,230,0.35)" stroke-width="1.5"/>
+  <path d="M8 40 Q18 47 35 47 Q52 47 62 40" fill="rgba(100,180,210,0.12)" stroke="rgba(130,200,230,0.25)" stroke-width="1"/>
+  <!-- Inner sheen -->
+  <ellipse cx="35" cy="24" rx="15" ry="12" fill="rgba(150,220,240,0.08)"/>
+  <!-- Tentacles -->
+  <path d="M15 45 Q12 65 16 80 Q20 95 14 108" stroke="rgba(100,180,210,0.18)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M25 47 Q22 68 26 84 Q30 98 24 110" stroke="rgba(100,180,210,0.15)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M35 48 Q33 72 37 88 Q41 102 35 110" stroke="rgba(100,180,210,0.18)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M45 47 Q48 68 44 84 Q40 98 46 110" stroke="rgba(100,180,210,0.15)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M55 45 Q58 65 54 80 Q50 95 56 108" stroke="rgba(100,180,210,0.18)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

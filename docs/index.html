@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Terms — Privacy Policy Classifier</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sea creatures -->
+    <div class="ocean-life">
+        <img src="creatures/jellyfish1.svg" class="creature c-jelly1" alt="" aria-hidden="true">
+        <img src="creatures/jellyfish2.svg" class="creature c-jelly2" alt="" aria-hidden="true">
+        <img src="creatures/fish1.svg" class="creature c-fish1" alt="" aria-hidden="true">
+        <img src="creatures/fish2.svg" class="creature c-fish2" alt="" aria-hidden="true">
+        <img src="creatures/fish3.svg" class="creature c-fish3" alt="" aria-hidden="true">
+        <img src="creatures/turtle.svg" class="creature c-turtle" alt="" aria-hidden="true">
+        <img src="creatures/octopus.svg" class="creature c-octopus" alt="" aria-hidden="true">
+    </div>
+
+    <!-- Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">Clear Terms</a>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#grading">Grading</a>
+                <a href="#install">Install</a>
+                <a href="https://github.com/nanoticity/clear-terms" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Clear Terms</h1>
+            <p class="hero-subtitle">A Chrome extension that reads Terms of Service pages and classifies each clause using a machine learning model trained on human-annotated data. Everything runs locally in your browser — nothing is sent to a server.</p>
+            <div class="grade-demo">
+                <div class="grade-card grade-a">A</div>
+                <div class="grade-card grade-b">B</div>
+                <div class="grade-card grade-c">C</div>
+                <div class="grade-card grade-d">D</div>
+                <div class="grade-card grade-f">F</div>
+            </div>
+            <button class="cta-button" onclick="document.getElementById('install').scrollIntoView({behavior:'smooth'})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download
+            </button>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-lead">The extension runs a scikit-learn pipeline ported to JavaScript. Here's what happens when you click it.</p>
+
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <div class="step-number">1</div>
+                    <h3>Text Extraction</h3>
+                    <p>A content script pulls the visible text from the current page via the DOM. No screenshots, no network requests.</p>
+                </div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-step">
+                    <div class="step-number">2</div>
+                    <h3>Clause Splitting</h3>
+                    <p>The text is split on paragraph boundaries. Fragments shorter than 80 characters, section headers, and numbered labels are filtered out with simple regex rules. What remains are the substantive clauses.</p>
+                </div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-step">
+                    <div class="step-number">3</div>
+                    <h3>TF-IDF Vectorization</h3>
+                    <p>Each clause is tokenized into unigrams and bigrams, then projected into a 10,000-dimensional TF-IDF space. Term frequencies are weighted by IDF and L2-normalized. This is the same math as scikit-learn's <code>TfidfVectorizer</code>, reimplemented in JS using a sparse representation.</p>
+                </div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-step">
+                    <div class="step-number">4</div>
+                    <h3>LinearSVC Classification</h3>
+                    <p>The TF-IDF vector is multiplied against a coefficient matrix (4 classes &times; 10,000 features) with intercept terms. The highest decision score wins. Confidence comes from a softmax over the raw scores. Class weights are balanced to account for label imbalance in the training data.</p>
+                </div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-step">
+                    <div class="step-number">5</div>
+                    <h3>Grading</h3>
+                    <p>Clause predictions are counted across four labels: <span class="tag good">good</span>, <span class="tag neutral">neutral</span>, <span class="tag bad">bad</span>, and <span class="tag blocker">blocker</span>. Blockers are weighted 2&times; in the bad ratio. The ratio maps to a letter grade from A to F.</p>
+                </div>
+            </div>
+
+            <div class="tech-details">
+                <h3>Model Details</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>Training Data</h4>
+                        <p>The model is trained on the <a href="https://zenodo.org/records/15012282" target="_blank" rel="noopener">ToS;DR dataset</a> — thousands of ToS clauses classified by volunteers as good, neutral, bad, or blocker. Only approved points with quoted text are used for training.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Vectorizer</h4>
+                        <p><code>TfidfVectorizer(ngram_range=(1,2), max_features=10000)</code>. The vocabulary and IDF weights are exported from the trained sklearn pipeline to a JSON file (698 KB) that ships with the extension.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Classifier</h4>
+                        <p><code>LinearSVC(class_weight='balanced', max_iter=5000)</code>. Coefficients and intercepts are exported to JSON. Inference is one matrix multiply — fast on any hardware.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>Privacy</h4>
+                        <p>The model file is bundled with the extension. Text extraction, vectorization, and classification all happen in the browser tab. No data is sent anywhere. No analytics. No telemetry.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grading Scale -->
+    <section class="section section-alt" id="grading">
+        <div class="container">
+            <h2 class="section-title">Grading Scale</h2>
+            <p class="section-lead">The grade is based on the ratio of bad+blocker clauses to total clauses. Blockers count double.</p>
+
+            <div class="grade-table">
+                <div class="grade-row">
+                    <div class="grade-letter grade-a">A</div>
+                    <div class="grade-info">
+                        <strong>Less than 10% bad, more than 40% good.</strong>
+                        <p>The policy is mostly fair. Few or no problematic clauses.</p>
+                    </div>
+                </div>
+                <div class="grade-row">
+                    <div class="grade-letter grade-b">B</div>
+                    <div class="grade-info">
+                        <strong>Less than 20% bad, more than 25% good.</strong>
+                        <p>Generally reasonable, with some clauses worth reading.</p>
+                    </div>
+                </div>
+                <div class="grade-row">
+                    <div class="grade-letter grade-c">C</div>
+                    <div class="grade-info">
+                        <strong>Less than 35% bad.</strong>
+                        <p>Mixed. There are enough problematic clauses to warrant a closer look.</p>
+                    </div>
+                </div>
+                <div class="grade-row">
+                    <div class="grade-letter grade-d">D</div>
+                    <div class="grade-info">
+                        <strong>Less than 50% bad.</strong>
+                        <p>A significant portion of the policy is unfavorable to users.</p>
+                    </div>
+                </div>
+                <div class="grade-row">
+                    <div class="grade-letter grade-f">F</div>
+                    <div class="grade-info">
+                        <strong>50% or more bad.</strong>
+                        <p>The majority of clauses are problematic or outright hostile. Read carefully before agreeing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section class="section" id="install">
+        <div class="container">
+            <h2 class="section-title">Install</h2>
+            <p class="section-lead">Clear Terms isn't on the Chrome Web Store. You install it manually by loading the unpacked extension.</p>
+
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="install-step-number">1</div>
+                    <div class="install-step-content">
+                        <h3>Download</h3>
+                        <p>Get the extension as a ZIP file.</p>
+                        <a href="clear-terms.zip" download class="download-button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            clear-terms.zip
+                        </a>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="install-step-number">2</div>
+                    <div class="install-step-content">
+                        <h3>Unzip</h3>
+                        <p>Extract the ZIP to a folder somewhere you won't accidentally delete it. You'll point Chrome to this folder.</p>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="install-step-number">3</div>
+                    <div class="install-step-content">
+                        <h3>Enable Developer Mode</h3>
+                        <p>Open Chrome and go to:</p>
+                        <div class="code-block">chrome://extensions</div>
+                        <p>Flip the <strong>Developer mode</strong> toggle in the top-right corner.</p>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="install-step-number">4</div>
+                    <div class="install-step-content">
+                        <h3>Load Unpacked</h3>
+                        <p>Click <strong>Load unpacked</strong> in the top-left, select the folder from Step 2. The extension icon appears in your toolbar — done.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub -->
+    <section class="section section-alt">
+        <div class="container center">
+            <h2 class="section-title">Source Code</h2>
+            <p class="section-lead">The full codebase is on GitHub — the extension, the training pipeline, and the Flask API.</p>
+            <a href="https://github.com/nanoticity/clear-terms" target="_blank" rel="noopener" class="github-button">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                nanoticity/clear-terms
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Clear Terms is open-source software under the MIT license.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

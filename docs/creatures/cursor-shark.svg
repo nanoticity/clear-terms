@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="28" viewBox="0 0 40 28">
+  <!-- Body -->
+  <path d="M2 16 Q1 14 3 12 Q8 8 18 9 L30 10 Q36 10 38 12 L38 14 Q36 16 30 16 L18 17 Q8 18 3 16 Z" fill="#4a6275" stroke="#6b8599" stroke-width="0.6" stroke-linejoin="round"/>
+  <!-- Dorsal fin -->
+  <path d="M16 9 L14 2 L20 8" fill="#4a6275" stroke="#6b8599" stroke-width="0.5" stroke-linejoin="round"/>
+  <!-- Tail fin -->
+  <path d="M33 11 L39 5 L37 11 M33 15 L39 22 L37 15" fill="#4a6275" stroke="#6b8599" stroke-width="0.5" stroke-linejoin="round"/>
+  <!-- Pectoral fin -->
+  <path d="M14 17 L12 23 L18 17" fill="#3d5568" stroke="#6b8599" stroke-width="0.4" stroke-linejoin="round"/>
+  <!-- Gill slits -->
+  <line x1="10" y1="11" x2="10" y2="15" stroke="#6b8599" stroke-width="0.4" opacity="0.5"/>
+  <line x1="11.5" y1="11" x2="11.5" y2="15" stroke="#6b8599" stroke-width="0.4" opacity="0.4"/>
+  <!-- Eye -->
+  <circle cx="6" cy="13" r="1.2" fill="#a0b8c8"/>
+  <circle cx="6" cy="13" r="0.5" fill="#1a2a36"/>
+  <!-- Mouth line -->
+  <path d="M2 15 Q4 16 7 15.5" stroke="#6b8599" stroke-width="0.4" fill="none" opacity="0.5"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" fill="none">
+  <!-- Body - smaller, rounder fish -->
+  <ellipse cx="25" cy="15" rx="17" ry="10" fill="rgba(130,150,210,0.2)" stroke="rgba(150,170,230,0.3)" stroke-width="1"/>
+  <!-- Tail -->
+  <path d="M41 15 L53 7 L51 15 L53 23 Z" fill="rgba(130,150,210,0.15)" stroke="rgba(150,170,230,0.22)" stroke-width="0.8"/>
+  <!-- Dorsal -->
+  <path d="M20 5 Q26 1 31 5" fill="rgba(130,150,210,0.12)" stroke="rgba(150,170,230,0.2)" stroke-width="0.7"/>
+  <!-- Eye -->
+  <circle cx="16" cy="13" r="2.2" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="15.5" cy="13" r="1.1" fill="rgba(30,50,70,0.5)"/>
+  <!-- Stripe -->
+  <path d="M20 8 Q18 15 20 22" stroke="rgba(150,170,230,0.15)" stroke-width="0.8" fill="none"/>
+</svg>

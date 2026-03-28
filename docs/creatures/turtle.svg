@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 65" fill="none">
+  <!-- Shell -->
+  <ellipse cx="45" cy="35" rx="28" ry="20" fill="rgba(70,150,110,0.2)" stroke="rgba(90,170,130,0.3)" stroke-width="1.5"/>
+  <!-- Shell pattern -->
+  <ellipse cx="45" cy="35" rx="20" ry="14" fill="none" stroke="rgba(90,170,130,0.15)" stroke-width="0.8"/>
+  <line x1="45" y1="21" x2="45" y2="49" stroke="rgba(90,170,130,0.1)" stroke-width="0.7"/>
+  <line x1="31" y1="25" x2="59" y2="45" stroke="rgba(90,170,130,0.1)" stroke-width="0.7"/>
+  <line x1="59" y1="25" x2="31" y2="45" stroke="rgba(90,170,130,0.1)" stroke-width="0.7"/>
+  <!-- Head - facing right -->
+  <ellipse cx="80" cy="30" rx="8" ry="6" fill="rgba(70,150,110,0.18)" stroke="rgba(90,170,130,0.25)" stroke-width="1"/>
+  <!-- Eye -->
+  <circle cx="84" cy="28" r="1.5" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="84.5" cy="28" r="0.8" fill="rgba(30,50,50,0.5)"/>
+  <!-- Front flippers -->
+  <ellipse cx="68" cy="18" rx="10" ry="4" fill="rgba(70,150,110,0.15)" stroke="rgba(90,170,130,0.2)" stroke-width="0.8" transform="rotate(25 68 18)"/>
+  <ellipse cx="68" cy="52" rx="10" ry="4" fill="rgba(70,150,110,0.15)" stroke="rgba(90,170,130,0.2)" stroke-width="0.8" transform="rotate(-25 68 52)"/>
+  <!-- Back flippers -->
+  <ellipse cx="22" cy="22" rx="8" ry="3.5" fill="rgba(70,150,110,0.12)" stroke="rgba(90,170,130,0.18)" stroke-width="0.8" transform="rotate(-15 22 22)"/>
+  <ellipse cx="22" cy="48" rx="8" ry="3.5" fill="rgba(70,150,110,0.12)" stroke="rgba(90,170,130,0.18)" stroke-width="0.8" transform="rotate(15 22 48)"/>
+  <!-- Tail -->
+  <path d="M17 35 L7 33 L9 37 Z" fill="rgba(70,150,110,0.12)"/>
+</svg>
