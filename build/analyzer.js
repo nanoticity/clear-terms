@@ -4,6 +4,10 @@
  * Returns the same JSON shape the popup already expects.
  */
 
+// Minimum confidence to trust a bad/blocker label.
+// Low-confidence bad/blocker predictions are downgraded to neutral.
+const BAD_BLOCKER_CONFIDENCE_THRESHOLD = 0.65;
+
 function analyzeTos(tosText, model) {
   const clauses = extractClauses(tosText);
 
@@ -11,7 +15,18 @@ function analyzeTos(tosText, model) {
     return { status: "error", message: "No clauses extracted from ToS" };
   }
 
-  const predictions = predictBatch(clauses, model);
+  const rawPredictions = predictBatch(clauses, model);
+
+  // Downgrade low-confidence bad/blocker predictions to neutral
+  const predictions = rawPredictions.map(pred => {
+    if (
+      (pred.classification === "bad" || pred.classification === "blocker") &&
+      pred.confidence < BAD_BLOCKER_CONFIDENCE_THRESHOLD
+    ) {
+      return { ...pred, classification: "neutral" };
+    }
+    return pred;
+  });
 
   const counts = { good: 0, neutral: 0, bad: 0, blocker: 0 };
   const confidences = { good: [], neutral: [], bad: [], blocker: [] };
@@ -29,7 +44,6 @@ function analyzeTos(tosText, model) {
     avgConfidences[k] = v.length ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 1000) / 1000 : 0;
   }
 
-  // Compute a letter grade based on clause distribution
   const total = clauses.length;
   const badRatio = (counts.bad + counts.blocker * 2) / total;
   const goodRatio = counts.good / total;
