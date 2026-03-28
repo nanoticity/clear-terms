@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from classifier import analyze_tos
@@ -8,6 +10,15 @@ from grades import append_grade, get_history
 
 app = Flask(__name__)
 CORS(app)
+
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
+
+
+def _require_admin():
+    auth = request.headers.get("Authorization", "")
+    if not ADMIN_TOKEN or not auth.startswith("Bearer "):
+        return False
+    return auth.split(" ", 1)[1].strip() == ADMIN_TOKEN
 
 
 @app.route("/health", methods=["GET"])
@@ -26,7 +37,6 @@ def analyze():
         return jsonify(result)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 
 @app.route("/site-info", methods=["POST"])
@@ -55,7 +65,7 @@ def site_info():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-@app.route("/report", methods=["POST"]) 
+@app.route("/report", methods=["POST"])
 def report():
     """Accept user reports for incorrect grades and persist them to reports.jsonl"""
     data = request.get_json(silent=True) or {}
@@ -91,6 +101,8 @@ def admin_process_reports():
 
     Returns a summary and whether retraining is recommended.
     """
+    if not _require_admin():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
     try:
         summary = process_reports()
         return jsonify({"status": "ok", "summary": summary})
