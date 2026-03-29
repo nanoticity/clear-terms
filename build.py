@@ -1,7 +1,8 @@
 import shutil
 import os
 
-def main() :
+
+def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     build_dir = os.path.join(base_dir, "build")
     extension_dir = os.path.join(base_dir, "extension")
@@ -14,6 +15,7 @@ def main() :
 
     shutil.copytree(extension_dir, build_dir)
     print("build complete - load the build folder into chrome")
+
 
 if __name__ == "__main__":
     main()
