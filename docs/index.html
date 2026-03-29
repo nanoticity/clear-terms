@@ -41,7 +41,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Clear Terms</h1>
-            <p class="hero-subtitle">A Chrome extension that reads Terms of Service and Privacy Policy pages, then uses AI to extract and classify every clause — telling you exactly what's good, bad, and worth worrying about.</p>
+            <p class="hero-subtitle">A Chrome extension that reads Terms of Service and Privacy Policy pages, then uses AI to extract and classify every clause — telling you exactly what's good, bad, and worth worrying about. Choose between OpenAI's GPT-4.1-nano with your own API key or a built-in offline model.</p>
             <div class="grade-demo">
                 <div class="grade-card grade-a">A</div>
                 <div class="grade-card grade-b">B</div>
@@ -69,24 +69,30 @@
             <div class="pipeline">
                 <div class="pipeline-step">
                     <div class="step-number">1</div>
+                    <h3>Configure</h3>
+                    <p>Open Settings and choose your analysis mode: <strong>OpenAI API</strong> (bring your own key, more accurate) or <strong>Built-in Model</strong> (offline, no key needed).</p>
+                </div>
+                <div class="pipeline-arrow"></div>
+                <div class="pipeline-step">
+                    <div class="step-number">2</div>
                     <h3>Navigate</h3>
                     <p>Go to any Terms of Service or Privacy Policy page in your browser.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
-                    <div class="step-number">2</div>
+                    <div class="step-number">3</div>
                     <h3>Click</h3>
                     <p>Click the Clear Terms icon in your toolbar. The extension extracts the visible text from the page.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
-                    <div class="step-number">3</div>
-                    <h3>AI Analysis</h3>
-                    <p>The full policy text is sent to an AI model that reads the entire document, extracts every meaningful clause, and classifies each one as <span class="tag good">good</span>, <span class="tag neutral">neutral</span>, <span class="tag bad">bad</span>, or <span class="tag blocker">blocker</span>.</p>
+                    <div class="step-number">4</div>
+                    <h3>Analysis</h3>
+                    <p>Your chosen model analyzes the document, extracts every meaningful clause, and classifies each one as <span class="tag good">good</span>, <span class="tag neutral">neutral</span>, <span class="tag bad">bad</span>, or <span class="tag blocker">blocker</span>.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
-                    <div class="step-number">4</div>
+                    <div class="step-number">5</div>
                     <h3>Results</h3>
                     <p>You get an overall letter grade, a breakdown of clause types, and a list of flagged clauses with direct quotes and plain-English explanations of why they matter.</p>
                 </div>
@@ -96,20 +102,20 @@
                 <h3>Under the Hood</h3>
                 <div class="tech-grid">
                     <div class="tech-card">
-                        <h4>AI-Powered</h4>
-                        <p>Clear Terms uses a large language model to understand the full context of each clause — not just keyword matching. It reads the policy the way a human would, but in seconds.</p>
+                        <h4>Two Analysis Modes</h4>
+                        <p>Choose <strong>OpenAI API</strong> for the most accurate results using GPT-4.1-nano with your own API key, or use the <strong>Built-in Model</strong> for fully offline analysis — no account or key required.</p>
                     </div>
                     <div class="tech-card">
                         <h4>Smart Extraction</h4>
-                        <p>The AI identifies and separates individual clauses from the document, skipping headers, navigation, and boilerplate. No brittle regex splitting.</p>
+                        <p>Both modes identify and separate individual clauses from the document, skipping headers, navigation, and boilerplate to focus on what matters.</p>
                     </div>
                     <div class="tech-card">
                         <h4>Quoted Evidence</h4>
-                        <p>Every flagged clause comes with a direct quote from the policy and a reason explaining why it matters — so you can verify the AI's judgment yourself.</p>
+                        <p>Every flagged clause comes with a direct quote from the policy and a reason explaining why it matters — so you can verify the judgment yourself.</p>
                     </div>
                     <div class="tech-card">
                         <h4>Open Source</h4>
-                        <p>The full extension source code is available on GitHub. The AI processing happens via a secure API proxy — your page text is sent for analysis and not stored.</p>
+                        <p>The full extension source code is available on GitHub. When using OpenAI mode, your text goes directly to OpenAI with your own key — nothing is proxied or stored by us.</p>
                     </div>
                 </div>
             </div>
@@ -120,7 +126,7 @@
     <section class="section section-alt" id="grading">
         <div class="container">
             <h2 class="section-title">Grading Scale</h2>
-            <p class="section-lead">The AI evaluates the entire policy holistically and assigns a letter grade.</p>
+            <p class="section-lead">Both modes evaluate the policy and assign a letter grade. OpenAI mode grades holistically via AI; the built-in model uses clause ratios.</p>
 
             <div class="grade-table">
                 <div class="grade-row">
@@ -207,7 +213,15 @@
                     <div class="install-step-number">4</div>
                     <div class="install-step-content">
                         <h3>Load Unpacked</h3>
-                        <p>Click <strong>Load unpacked</strong> in the top-left, select the folder from Step 2. The extension icon appears in your toolbar — done.</p>
+                        <p>Click <strong>Load unpacked</strong> in the top-left, select the folder from Step 2. The extension icon appears in your toolbar.</p>
+                    </div>
+                </div>
+
+                <div class="install-step">
+                    <div class="install-step-number">5</div>
+                    <div class="install-step-content">
+                        <h3>Configure</h3>
+                        <p>Right-click the extension icon and choose <strong>Options</strong> (or click the gear icon in the popup). Pick your analysis mode: enter your OpenAI API key for the best results, or select the built-in model to use it offline.</p>
                     </div>
                 </div>
             </div>

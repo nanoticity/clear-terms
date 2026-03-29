@@ -1,11 +1,42 @@
+let _cachedModel = null;
+
+async function getModel() {
+  if (_cachedModel) return _cachedModel;
+  const url = chrome.runtime.getURL("model/model.json");
+  const res = await fetch(url);
+  const json = await res.json();
+  _cachedModel = loadModel(json);
+  return _cachedModel;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const statusEl = document.getElementById("status");
   const statusText = document.getElementById("status-text");
   const errorEl = document.getElementById("error");
   const errorMsg = document.getElementById("error-message");
   const resultsEl = document.getElementById("results");
+  const setupPrompt = document.getElementById("setup-prompt");
+
+  // Settings links
+  document.getElementById("settings-link").addEventListener("click", (e) => {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
+  });
+  document.getElementById("open-options").addEventListener("click", (e) => {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
+  });
 
   try {
+    // Check configuration
+    const config = await chrome.storage.sync.get(["analysisMode", "openaiApiKey"]);
+
+    if (!config.analysisMode) {
+      statusEl.hidden = true;
+      setupPrompt.hidden = false;
+      return;
+    }
+
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     statusText.textContent = "Extracting page text...";
@@ -19,9 +50,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       throw new Error("Not enough text on this page to analyze.");
     }
 
-    statusText.textContent = "Sending to AI for analysis...";
+    let data;
 
-    const data = await analyzeTos(pageText);
+    if (config.analysisMode === "openai") {
+      if (!config.openaiApiKey) {
+        throw new Error("OpenAI API key not set. Please configure it in Settings.");
+      }
+      statusText.textContent = "Sending to AI for analysis...";
+      data = await analyzeTosOpenAI(pageText, config.openaiApiKey);
+    } else {
+      statusText.textContent = "Loading model...";
+      const model = await getModel();
+      statusText.textContent = "Analyzing with built-in model...";
+      data = analyzeTosLocal(pageText, model);
+    }
 
     if (data.status === "error") {
       throw new Error(data.message || "No clauses found on this page.");

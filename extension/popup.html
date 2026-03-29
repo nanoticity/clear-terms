@@ -8,6 +8,12 @@
   <div class="header">
     <h1>Clear Terms</h1>
     <p class="subtitle">Privacy Policy Analyzer</p>
+    <a href="#" id="settings-link" class="settings-link" title="Settings">&#9881;</a>
+  </div>
+
+  <div id="setup-prompt" class="setup-prompt" hidden>
+    <p>Please configure Clear Terms before use.</p>
+    <a href="#" id="open-options" class="setup-link">Open Settings</a>
   </div>
 
   <div id="status" class="status">
@@ -66,7 +72,11 @@
     </div>
   </div>
 
-  <script src="analyzer.js"></script>
+  <script src="classifier.js"></script>
+  <script src="clauses.js"></script>
+  <script src="reasons.js"></script>
+  <script src="analyzer-local.js"></script>
+  <script src="analyzer-openai.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

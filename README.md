@@ -1,25 +1,31 @@
 # Clear Terms
 
-A Chrome extension that analyzes Terms of Service documents using machine learning. It classifies ToS clauses as **good**, **neutral**, **bad**, or **blocker** and gives an overall letter grade (A-F) — all running locally in your browser with no external API calls.
+A Chrome extension that analyzes Terms of Service and Privacy Policy pages. It classifies clauses as **good**, **neutral**, **bad**, or **blocker** and gives an overall letter grade (A-F).
+
+Choose between two analysis modes:
+- **OpenAI API** — Uses GPT-4.1-nano for accurate, context-aware analysis. Bring your own API key.
+- **Built-in Model** — Runs entirely offline in your browser using a lightweight TF-IDF + LinearSVC model. Less accurate but no API key needed.
 
 ## How It Works
 
-1. Click the extension on any webpage with a Terms of Service
-2. Clear Terms extracts the text, splits it into clauses, and filters out headers/noise
-3. A TF-IDF + LinearSVC model (exported from scikit-learn to JSON) classifies each clause
-4. You get a letter grade, a color-coded breakdown, and sample problematic clauses
+1. Install the extension and open **Settings** (gear icon or right-click > Options)
+2. Pick your analysis mode — enter an OpenAI API key, or select the built-in model
+3. Navigate to any Terms of Service or Privacy Policy page and click the extension
+4. You get a letter grade, a color-coded breakdown, and flagged clauses with quotes and explanations
 
 ## Project Structure
 
 ```
 extension/          Chrome extension (Manifest V3)
-  ├── popup.html/js   Popup UI and orchestration
-  ├── classifier.js   Pure JS ML inference (TF-IDF + LinearSVC)
-  ├── clauses.js      Clause extraction and filtering
-  ├── analyzer.js     Aggregation and grading logic
-  ├── content.js      Content script for text extraction
-  ├── style.css       Popup styles
-  └── model/          Exported model JSON
+  ├── popup.html/js       Popup UI and orchestration
+  ├── analyzer-openai.js  OpenAI API analysis (GPT-4.1-nano)
+  ├── analyzer-local.js   Local ML analysis (TF-IDF + LinearSVC)
+  ├── classifier.js       Pure JS ML inference engine
+  ├── clauses.js          Clause extraction and filtering
+  ├── reasons.js          Pattern-based reasoning
+  ├── options.html/js     Settings page (mode + API key)
+  ├── style.css           Styles
+  └── model/              Exported model JSON
 
 backend/            Python API server (Flask)
   ├── app.py          REST API (/health, /analyze)
@@ -30,11 +36,11 @@ backend/            Python API server (Flask)
 
 training/           Model training pipeline
   ├── train.py        Train TF-IDF + LinearSVC on ToS;DR data
-  ├── export_model.py Convert sklearn model to JSON for browser
   ├── download_data.py  Download dataset from Zenodo
   └── data/           Training CSVs (Git LFS)
 
-build.py            Copies extension/ to build/ for Chrome loading
+docs/               Project website
+build.py            Copies extension/ to build/ and creates clear-terms.zip
 tests/              Integration tests
 ```
 
@@ -73,9 +79,11 @@ python build.py
 
 Then in Chrome: **Extensions > Manage Extensions > Load unpacked** and select the `build/` folder.
 
+Open the extension's **Options** page to choose your analysis mode before first use.
+
 ### Run the Backend API (optional)
 
-The extension works standalone with in-browser inference. The backend is an alternative for server-side analysis:
+The extension works standalone. The backend is an alternative for server-side analysis:
 
 ```bash
 python backend/app.py
@@ -85,12 +93,19 @@ python backend/app.py
 - `GET /health` — Health check
 - `POST /analyze` — Analyze ToS text (`{"text": "..."}`)
 
-## ML Model
+## Analysis Modes
 
-- **Training data:** [ToS;DR dataset](https://zenodo.org/records/15012282) (cases and points with human-annotated classifications)
-- **Vectorization:** TF-IDF with unigrams + bigrams, max 10,000 features
-- **Classifier:** LinearSVC with balanced class weights
-- **Classes:** good, neutral, bad, blocker
+### OpenAI API (recommended)
+- Uses GPT-4.1-nano via the OpenAI API with your own key
+- Reads the full policy contextually, extracts quotes, and explains each clause
+- Grades holistically based on overall policy friendliness
+
+### Built-in Model (offline)
+- TF-IDF vectorization with unigrams + bigrams
+- LinearSVC classifier with balanced class weights
+- Trained on the [ToS;DR dataset](https://zenodo.org/records/15012282)
+- Pattern-based reasoning for human-readable explanations
+- Grades based on clause classification ratios
 
 ## Grading Scale
 

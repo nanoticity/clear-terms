@@ -1,9 +1,9 @@
 /**
  * Sends the full privacy policy text to OpenAI and gets back
- * structured clause analysis.
+ * structured clause analysis. Requires user's own API key.
  */
 
-const WORKER_URL = "https://openai-worker.nanoticity.workers.dev";
+const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
 const SYSTEM_PROMPT = `Analyze this privacy policy / Terms of Service. Return JSON only.
 
@@ -34,16 +34,17 @@ JSON format:
   ]
 }`;
 
-async function analyzeTos(tosText) {
+async function analyzeTosOpenAI(tosText, apiKey) {
   const maxChars = 30000;
   if (tosText.length > maxChars) {
     tosText = tosText.slice(0, maxChars);
   }
 
-  const res = await fetch(WORKER_URL, {
+  const res = await fetch(OPENAI_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: "gpt-4.1-nano",

@@ -14,7 +14,11 @@ def main():
             os.remove(build_dir)
 
     shutil.copytree(extension_dir, build_dir)
+
+    zip_path = os.path.join(base_dir, "clear-terms")
+    shutil.make_archive(zip_path, "zip", build_dir)
     print("build complete - load the build folder into chrome")
+    print(f"zipped to {zip_path}.zip")
 
 
 if __name__ == "__main__":
