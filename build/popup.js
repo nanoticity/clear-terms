@@ -10,9 +10,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     statusText.textContent = "Extracting page text...";
 
-    // Get text from content script
-    const response = await chrome.tabs.sendMessage(tab.id, { action: "getPageText" });
-    const pageText = response?.text;
+    const [{ result: pageText }] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => document.body.innerText,
+    });
 
     if (!pageText || pageText.length < 200) {
       throw new Error("Not enough text on this page to analyze.");
