@@ -41,7 +41,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Clear Terms</h1>
-            <p class="hero-subtitle">A Chrome extension that reads Terms of Service pages and classifies each clause using a machine learning model trained on human-annotated data. Everything runs locally in your browser — nothing is sent to a server.</p>
+            <p class="hero-subtitle">A Chrome extension that reads Terms of Service and Privacy Policy pages, then uses AI to extract and classify every clause — telling you exactly what's good, bad, and worth worrying about.</p>
             <div class="grade-demo">
                 <div class="grade-card grade-a">A</div>
                 <div class="grade-card grade-b">B</div>
@@ -64,58 +64,52 @@
     <section class="section" id="how-it-works">
         <div class="container">
             <h2 class="section-title">How It Works</h2>
-            <p class="section-lead">The extension runs a scikit-learn pipeline ported to JavaScript. Here's what happens when you click it.</p>
+            <p class="section-lead">Navigate to any Terms of Service or Privacy Policy page, click the extension, and AI does the rest.</p>
 
             <div class="pipeline">
                 <div class="pipeline-step">
                     <div class="step-number">1</div>
-                    <h3>Text Extraction</h3>
-                    <p>A content script pulls the visible text from the current page via the DOM. No screenshots, no network requests.</p>
+                    <h3>Navigate</h3>
+                    <p>Go to any Terms of Service or Privacy Policy page in your browser.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
                     <div class="step-number">2</div>
-                    <h3>Clause Splitting</h3>
-                    <p>The text is split on paragraph boundaries. Fragments shorter than 80 characters, section headers, and numbered labels are filtered out with simple regex rules. What remains are the substantive clauses.</p>
+                    <h3>Click</h3>
+                    <p>Click the Clear Terms icon in your toolbar. The extension extracts the visible text from the page.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
                     <div class="step-number">3</div>
-                    <h3>TF-IDF Vectorization</h3>
-                    <p>Each clause is tokenized into unigrams and bigrams, then projected into a 10,000-dimensional TF-IDF space. Term frequencies are weighted by IDF and L2-normalized. This is the same math as scikit-learn's <code>TfidfVectorizer</code>, reimplemented in JS using a sparse representation.</p>
+                    <h3>AI Analysis</h3>
+                    <p>The full policy text is sent to an AI model that reads the entire document, extracts every meaningful clause, and classifies each one as <span class="tag good">good</span>, <span class="tag neutral">neutral</span>, <span class="tag bad">bad</span>, or <span class="tag blocker">blocker</span>.</p>
                 </div>
                 <div class="pipeline-arrow"></div>
                 <div class="pipeline-step">
                     <div class="step-number">4</div>
-                    <h3>LinearSVC Classification</h3>
-                    <p>The TF-IDF vector is multiplied against a coefficient matrix (4 classes &times; 10,000 features) with intercept terms. The highest decision score wins. Confidence comes from a softmax over the raw scores. Class weights are balanced to account for label imbalance in the training data.</p>
-                </div>
-                <div class="pipeline-arrow"></div>
-                <div class="pipeline-step">
-                    <div class="step-number">5</div>
-                    <h3>Grading</h3>
-                    <p>Clause predictions are counted across four labels: <span class="tag good">good</span>, <span class="tag neutral">neutral</span>, <span class="tag bad">bad</span>, and <span class="tag blocker">blocker</span>. Blockers are weighted 2&times; in the bad ratio. The ratio maps to a letter grade from A to F.</p>
+                    <h3>Results</h3>
+                    <p>You get an overall letter grade, a breakdown of clause types, and a list of flagged clauses with direct quotes and plain-English explanations of why they matter.</p>
                 </div>
             </div>
 
             <div class="tech-details">
-                <h3>Model Details</h3>
+                <h3>Under the Hood</h3>
                 <div class="tech-grid">
                     <div class="tech-card">
-                        <h4>Training Data</h4>
-                        <p>The model is trained on the <a href="https://zenodo.org/records/15012282" target="_blank" rel="noopener">ToS;DR dataset</a> — thousands of ToS clauses classified by volunteers as good, neutral, bad, or blocker. Only approved points with quoted text are used for training.</p>
+                        <h4>AI-Powered</h4>
+                        <p>Clear Terms uses a large language model to understand the full context of each clause — not just keyword matching. It reads the policy the way a human would, but in seconds.</p>
                     </div>
                     <div class="tech-card">
-                        <h4>Vectorizer</h4>
-                        <p><code>TfidfVectorizer(ngram_range=(1,2), max_features=10000)</code>. The vocabulary and IDF weights are exported from the trained sklearn pipeline to a JSON file (698 KB) that ships with the extension.</p>
+                        <h4>Smart Extraction</h4>
+                        <p>The AI identifies and separates individual clauses from the document, skipping headers, navigation, and boilerplate. No brittle regex splitting.</p>
                     </div>
                     <div class="tech-card">
-                        <h4>Classifier</h4>
-                        <p><code>LinearSVC(class_weight='balanced', max_iter=5000)</code>. Coefficients and intercepts are exported to JSON. Inference is one matrix multiply — fast on any hardware.</p>
+                        <h4>Quoted Evidence</h4>
+                        <p>Every flagged clause comes with a direct quote from the policy and a reason explaining why it matters — so you can verify the AI's judgment yourself.</p>
                     </div>
                     <div class="tech-card">
-                        <h4>Privacy</h4>
-                        <p>The model file is bundled with the extension. Text extraction, vectorization, and classification all happen in the browser tab. No data is sent anywhere. No analytics. No telemetry.</p>
+                        <h4>Open Source</h4>
+                        <p>The full extension source code is available on GitHub. The AI processing happens via a secure API proxy — your page text is sent for analysis and not stored.</p>
                     </div>
                 </div>
             </div>
@@ -126,42 +120,42 @@
     <section class="section section-alt" id="grading">
         <div class="container">
             <h2 class="section-title">Grading Scale</h2>
-            <p class="section-lead">The grade is based on the ratio of bad+blocker clauses to total clauses. Blockers count double.</p>
+            <p class="section-lead">The AI evaluates the entire policy holistically and assigns a letter grade.</p>
 
             <div class="grade-table">
                 <div class="grade-row">
                     <div class="grade-letter grade-a">A</div>
                     <div class="grade-info">
-                        <strong>Less than 10% bad, more than 40% good.</strong>
-                        <p>The policy is mostly fair. Few or no problematic clauses.</p>
+                        <strong>Very user-friendly.</strong>
+                        <p>Strong privacy protections, minimal concerns. The policy respects your rights.</p>
                     </div>
                 </div>
                 <div class="grade-row">
                     <div class="grade-letter grade-b">B</div>
                     <div class="grade-info">
-                        <strong>Less than 20% bad, more than 25% good.</strong>
-                        <p>Generally reasonable, with some clauses worth reading.</p>
+                        <strong>Generally good.</strong>
+                        <p>A few minor concerns but nothing alarming. Most clauses are fair.</p>
                     </div>
                 </div>
                 <div class="grade-row">
                     <div class="grade-letter grade-c">C</div>
                     <div class="grade-info">
-                        <strong>Less than 35% bad.</strong>
-                        <p>Mixed. There are enough problematic clauses to warrant a closer look.</p>
+                        <strong>Average.</strong>
+                        <p>Some notable bad practices balanced by some good ones. Worth a closer look.</p>
                     </div>
                 </div>
                 <div class="grade-row">
                     <div class="grade-letter grade-d">D</div>
                     <div class="grade-info">
-                        <strong>Less than 50% bad.</strong>
-                        <p>A significant portion of the policy is unfavorable to users.</p>
+                        <strong>Poor.</strong>
+                        <p>Many unfavorable clauses and few protections for users.</p>
                     </div>
                 </div>
                 <div class="grade-row">
                     <div class="grade-letter grade-f">F</div>
                     <div class="grade-info">
-                        <strong>50% or more bad.</strong>
-                        <p>The majority of clauses are problematic or outright hostile. Read carefully before agreeing.</p>
+                        <strong>Hostile to users.</strong>
+                        <p>Major red flags throughout. Read very carefully before agreeing.</p>
                     </div>
                 </div>
             </div>
@@ -224,7 +218,7 @@
     <section class="section section-alt">
         <div class="container center">
             <h2 class="section-title">Source Code</h2>
-            <p class="section-lead">The full codebase is on GitHub — the extension, the training pipeline, and the Flask API.</p>
+            <p class="section-lead">The full extension source code is on GitHub.</p>
             <a href="https://github.com/nanoticity/clear-terms" target="_blank" rel="noopener" class="github-button">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
