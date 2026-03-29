@@ -221,6 +221,15 @@ h2 {
 .clause-card.bad     { border-left-color: var(--bad); }
 .clause-card.blocker { border-left-color: var(--blocker); }
 
+.clause-quote {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 12px;
+  margin-bottom: 6px;
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+}
+
 .clause-type {
   font-size: 10px;
   font-weight: 700;
@@ -234,23 +243,15 @@ h2 {
 .clause-type.blocker { color: var(--blocker); }
 
 .clause-reasons {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .clause-reason {
   font-size: 12px;
-  font-weight: 600;
-  color: #e6edf3;
-  padding: 2px 0;
+  color: var(--text);
 }
 
-.clause-reason::before {
-  content: "\2192 ";
-  opacity: 0.5;
-}
-
-.clause-text {
-  color: var(--text-dim);
-  font-size: 11px;
-  line-height: 1.5;
+#flagged-clauses,
+#good-clauses {
+  padding: 0 20px 16px;
 }

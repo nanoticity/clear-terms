@@ -1,14 +1,3 @@
-let _cachedModel = null;
-
-async function getModel() {
-  if (_cachedModel) return _cachedModel;
-  const url = chrome.runtime.getURL("model/model.json");
-  const res = await fetch(url);
-  const json = await res.json();
-  _cachedModel = loadModel(json);
-  return _cachedModel;
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   const statusEl = document.getElementById("status");
   const statusText = document.getElementById("status-text");
@@ -19,18 +8,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-    statusText.textContent = "Analyzing page...";
+    statusText.textContent = "Extracting page text...";
 
     // Get text from content script
     const response = await chrome.tabs.sendMessage(tab.id, { action: "getPageText" });
     const pageText = response?.text;
 
     if (!pageText || pageText.length < 200) {
-      throw new Error("Not enough text on this page. Navigate to a Terms of Service or Privacy Policy page first.");
+      throw new Error("Not enough text on this page to analyze.");
     }
 
-    const model = await getModel();
-    const data = analyzeTos(pageText, model);
+    statusText.textContent = "Sending to AI for analysis...";
+
+    const data = await analyzeTos(pageText);
 
     if (data.status === "error") {
       throw new Error(data.message || "No clauses found on this page.");
@@ -62,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById(`bar-${type}`).style.width = `${(count / total) * 100}%`;
     }
 
-    // Flagged clauses (bad + blocker) with reasoning
     const flaggedContainer = document.getElementById("flagged-clauses");
     const flaggedSection = document.getElementById("flagged-section");
 
@@ -73,7 +62,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Good clauses with reasoning
     const goodContainer = document.getElementById("good-clauses");
     const goodSection = document.getElementById("good-section");
 
@@ -91,7 +79,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let html = `<div class="clause-type ${clause.classification}">${clause.classification}</div>`;
 
-    // Show reasons if any
+    if (clause.quote) {
+      html += `<div class="clause-quote">"${escapeHtml(clause.quote)}"</div>`;
+    }
+
     if (clause.reasons && clause.reasons.length > 0) {
       html += `<div class="clause-reasons">`;
       for (const reason of clause.reasons) {
@@ -99,13 +90,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       html += `</div>`;
     }
-
-    // Truncate long clause text
-    let text = clause.text;
-    if (text.length > 300) {
-      text = text.slice(0, 297) + "...";
-    }
-    html += `<div class="clause-text">${escapeHtml(text)}</div>`;
 
     card.innerHTML = html;
     return card;
